@@ -1,48 +1,48 @@
-# Ansible Role: F5 automation tool chain (ACT) deploy declaration
+# Ansible Role: F5 automation tool chain (ATC) deploy declaration
 
 Deploys declaritives to automation tool chain services (AS3, DO, TS).
 
 ## Requirements
 
-Corrisponding ACT service must be installed on BIG-IP or BIG-IQ prior to deploying declaration.
+Corresponding ATC service must be installed on BIG-IP or BIG-IQ prior to deploying declaration.
 
 ## Role Variables
 
 Available variables are listed below. For their default values, see `defaults/main.yml`:
 
-    act_server: "{{ ansible_host }}"
-    act_port: 443
-    act_user:
-    act_password:
-    act_validate_certs: true
-    act_transport: rest
-    act_timeout: 120
+    provider:
+      server: "{{ atc_server }}"
+      server_port: "{{ atc_port }}"
+      user: "{{ atc_user }}"
+      password: "{{ atc_password }}"
+      validate_certs: "{{ atc_validate_certs }}"
+      transport: "{{ atc_transport }}"
 
 Establishes initial connection to your BIG-IQ. These values are substituted into
 your ``provider`` module parameter.
 
 Required
 
-    act_method: POST
+    atc_method: GET
 
-act_method accepted values include [POST, GET] for all services, and [DELETE] for AS3 only.
-f5_act_deply_declaration role currently does not support AS3 PATCH method.
+atc_method accepted values include [POST, GET] for all services, and [DELETE] for AS3 only.
+f5_atc_deploy_declaration role currently does not support AS3 PATCH method.
 
 Required
 
-    act_declaration_file:
+    atc_declaration_file:
 
 Local location of declaration.
 
 Required.
 
-    act_declaration_url:
+    atc_declaration_url:
 
 URL of declaration location
 
 Optional
 
-File at url specfied is downloaded to path/filename specified in varable act_declaration_file.
+File at url specfied is downloaded to path/filename specified in variable atc_declaration_file.
 
 Default is null.
 
@@ -124,20 +124,20 @@ None.
       vars_files:
         - vars/main.yml
       roles:
-        - { role: f5devcentral.f5_act_deploy_declaration }
+        - { role: f5devcentral.f5_atc_deploy_declaration }
 
 *Inside `vars/main.yml`*:
 
-    act_server: "{{ ansible_host }}"
-    act_port: 443
-    act_user: admin
-    act_password: admin
-    act_validate_certs: true
-    act_transport: rest
-    act_timeout: 120
-    act_method: POST
-    act_declaration_file: files/example_as3_declaration.json
-    act_declaration_url: https://raw.githubusercontent.com/crosbygw/declaritives/master/files/example_as3_declaration.json
+    atc_server: "{{ ansible_host }}"
+    atc_port: 443
+    atc_user: admin
+    atc_password: admin
+    atc_validate_certs: true
+    atc_transport: rest
+    atc_timeout: 120
+    atc_method: POST
+    atc_declaration_file: files/example_as3_declaration.json
+    atc_declaration_url: https://raw.githubusercontent.com/crosbygw/declaritives/master/files/example_as3_declaration.json
     as3_tenant: Sample_01
     as3_show: base
     as3_showhash: true

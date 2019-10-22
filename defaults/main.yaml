@@ -3,28 +3,30 @@
 ### Connection parameters
 #
 # Required
-act_server: "{{ ansible_host }}"
-act_port: 443
-act_user:
-act_password:
-act_validate_certs: true
-act_transport: rest
-act_timeout: 120
+atc_server: "{{ ansible_host }}"
+atc_port: 443
+atc_user:
+atc_password:
+atc_validate_certs: true
+atc_transport: rest
 
 ### Automated Tool Chain service configuration.
 #
+# Timeout in seconds used during web connections.
+atc_timeout: 120
+
 # act_method accepted values include [POST, GET] for all services, and [DELETE] for AS3 only,
 # f5_act_deply_declaration role currently does not support AS3 PATCH method.
 #
 # Required
-act_method: POST
+atc_method: GET
 
 # Local location of declaration.
 #
 # Required
 #
 # Path and filename required.
-act_declaration_file:
+atc_declaration_file:
 
 # URL of declaration location
 #
@@ -33,7 +35,17 @@ act_declaration_file:
 # File at url specfied is downloaded to path/filename specified in varable act_declaration_file.
 #
 # Default is null.
-act_declaration_url:
+atc_declaration_url:
+
+# Amount of time between retires when checking service status
+#
+# Required
+atc_delay: 30
+
+# Number of times to retry service status
+#
+# Required
+atc_retries: 10
 
 # POSTing to a specific AS3 tenant.
 #
@@ -84,17 +96,3 @@ as3_show: base
 #
 # Default is false.
 as3_showhash: false
-
-# Async with AS3 3.5.0+
-#
-# Optional
-#
-# Setting async to true causes AS3 to respond with a 202 status and a request ID which
-# you can later use in a GET request to a new /task endpoint to get the results. Typically
-# only used with extremely large declarations which take a long time for AS3 to process.
-# The record IDs expire after 24 hours. When you retrieve a record, AS3 deletes the record
-# along with any expired records. A GET to /task with no record ID specified returns
-#  (and deletes) all records.
-#
-# Default is false.
-as3_async: false
