@@ -1,0 +1,15 @@
+---
+
+- name: "{{ method }} {{ service }} declaration"
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ actUrl }}"
+    method: "{{ method }}"
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+    return_content: true
+    validate_certs: false
+    body_format: json
+    body: "{{ lookup('file', declaration_file) }}"
+    status_code: 204, 202, 200
+  register: result
+  delegate_to: localhost

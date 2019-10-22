@@ -1,0 +1,38 @@
+---
+
+- name: Wait for AS3 Task to complete when async set to true
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/appsvcs/task/{{result.json.id}}"
+    method: GET
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+    return_content: true
+    validate_certs: false
+    status_code: 200
+  register: as3_waitStatus
+  until: as3_waitStatus is success
+  retries: 10
+  delay: 30
+  delegate_to: localhost
+  when:
+    - service == "AS3"
+    - method == "POST"
+    - async
+
+- name: Wait for DO Task to complete
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ actUrl }}/task/{{result.json.id}}"
+    method: GET
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+    return_content: true
+    validate_certs: false
+    status_code: 200
+  register: do_waitStatus
+  until: do_waitStatus is success
+  retries: 10
+  delay: 30
+  delegate_to: localhost
+  when:
+    - service == "Device"
+    - method == "POST"
