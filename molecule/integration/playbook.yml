@@ -4,4 +4,4 @@
   hosts: all
 
   roles:
-    - role: bigiq-onboard
+    - role: f5_act_deploy_declaration

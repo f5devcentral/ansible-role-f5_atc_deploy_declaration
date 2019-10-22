@@ -1,15 +1,75 @@
 ---
 
-- name: "{{ method }} {{ service }} declaration"
+- name: "{{ method }} AS3 declaration"
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ actUrl }}"
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atcUrl }}"
     method: "{{ method }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
     return_content: true
-    validate_certs: false
+    validate_certs: "{{ provider.validate_certs }}"
     body_format: json
     body: "{{ lookup('file', declaration_file) }}"
     status_code: 204, 202, 200
   register: result
+  changed_when:
+    - result.json.results | map(attribute='message') | list | first != 'no change'
+    - result.json.results | map(attribute='message') | list | first != 'Declaration successfully submitted'
+  failed_when:
+    - result.json.results | map(attribute='message') | list | first != 'success'
+    - result.json.results | map(attribute='message') | list | first != 'no change'
+    - result.json.results | map(attribute='message') | list | first != 'Declaration successfully submitted'
+  when:
+    - method == 'POST' or method == 'DELETE'
+    - service == "AS3"
+  delegate_to: localhost
+
+- name: "{{ method }} DO declaration"
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atcUrl }}"
+    method: "{{ method }}"
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+    return_content: true
+    validate_certs: "{{ provider.validate_certs }}"
+    body_format: json
+    body: "{{ lookup('file', declaration_file) }}"
+    status_code: 202
+  register: resultDo
+  when:
+    - method == 'POST'
+    - service == "Device"
+  delegate_to: localhost
+
+- name: "{{ method }} TS declaration"
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atcUrl }}"
+    method: "{{ method }}"
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+    return_content: true
+    validate_certs: "{{ provider.validate_certs }}"
+    body_format: json
+    body: "{{ lookup('file', declaration_file) }}"
+    status_code: 204, 202, 200
+  register: resultTs
+  failed_when:
+    - resultTs.json.message != 'success'
+  when:
+    - method == 'POST'
+    - service == "Telemetry"
+
+- name: "GET {{ service }} declaration"
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atcUrl }}"
+    method: "{{ method }}"
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+    return_content: true
+    validate_certs: "{{ provider.validate_certs }}"
+    body_format: json
+    body: "{{ lookup('file', declaration_file) }}"
+    status_code: 204, 202, 200
+  when:
+    - method == 'GET'
   delegate_to: localhost
