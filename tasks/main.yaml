@@ -1,21 +1,17 @@
 ---
 
-- name: Setup provider
+- name: Setup provider and varables
   set_fact:
-    provider:
-      server: "{{ act_server }}"
-      server_port: "{{ act_port }}"
-      user: "{{ act_user }}"
-      password: "{{ act_password }}"
-      validate_certs: "{{ act_validate_certs }}"
-      transport: "{{ act_transport }}"
-    declaration_url: "{{ act_declaration_url|default('') }}"
-    declaration_file: "{{ act_declaration_file }}"
+    provider: "{{ provider }}"
+    declaration_url: "{{ atc_declaration_url|default('') }}"
+    declaration_file: "{{ atc_declaration_file }}"
     tenant: "{{ as3_tenant|default('') }}"
-    method: "{{ act_method }}"
+    method: "{{ atc_method }}"
     show: "{{ as3_show|default('base') }}"
     show_hash: "{{ as3_showhash|default(false) }}"
-    async: "{{ as3_async|default(false) }}"
+    timeout: "{{ atc_timeout }}"
+    retries: "{{ atc_retries }}"
+    delay: "{{ atc_delay }}"
 
 - name: Download file if url specified
   get_url:
@@ -30,16 +26,16 @@
 
 - name: Setup service "{{ service }}" endpoints
   set_fact:
-    actUrl: "{{ toolchain_metadata['components'][service]['endpoints']['configure']['uri'] }}"
-    actCheckUrl: "{{ toolchain_metadata['components'][service]['endpoints']['info']['uri'] }}"
+    atcUrl: "{{ toolchain_metadata['components'][service]['endpoints']['configure']['uri'] }}"
+    atcCheckUrl: "{{ toolchain_metadata['components'][service]['endpoints']['info']['uri'] }}"
 
 - name: include authentication.yaml
   include_tasks: authentication.yaml
 
 - name: Verify "{{ service }}" service is available, and collect service info
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ actCheckUrl }}"
-    timeout: "{{ act_timeout }}"
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atcCheckUrl }}"
+    timeout: "{{ timeout }}"
     validate_certs: "{{ provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
@@ -47,8 +43,8 @@
   until:
     - status is success
     - status.json is defined
-  retries: 10
-  delay: 6
+  retries: "{{ retries }}"
+  delay: "{{ delay }}"
 
 - name: include as3_filtering.yaml
   include_tasks: as3_filtering.yaml
@@ -59,8 +55,7 @@
 - name: include declare.yaml
   include_tasks: declare.yaml
 
-- name: include act_task_check.yaml
-  include_tasks: act_task_check.yaml
+- name: include atc_task_check.yaml
+  include_tasks: atc_task_check.yaml
   when:
     - service == "AS3" or service == "Device"
-    - method == "POST"

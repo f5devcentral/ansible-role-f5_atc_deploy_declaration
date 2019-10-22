@@ -4,7 +4,7 @@
   uri:
     url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/authn/login"
     method: POST
-    timeout: "{{ act_timeout }}"
+    timeout: "{{ timeout }}"
     validate_certs: "{{ provider.validate_certs }}"
     body:
       username: "{{ provider.user }}"
@@ -20,7 +20,7 @@
 - name: Test authentication
   uri:
     url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/echo"
-    timeout: "{{ act_timeout }}"
+    timeout: "{{ timeout }}"
     validate_certs: "{{ provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"

@@ -2,7 +2,7 @@
 
 - name: Setup AS3 endpoint with specified tenant when tenant specified
   set_fact:
-    actUrl: "{{ actUrl }}/{{ tenant }}"
+    atcUrl: "{{ atcUrl }}/{{ tenant }}"
   when:
     - tenant != ""
     - service == "AS3"
@@ -10,7 +10,7 @@
 
 - name: Setup URL query 'show' when using GET, POST, or DELETE with AS3
   set_fact:
-    actUrl: "{{ actUrl }}?show={{ show }}"
+    atcUrl: "{{ atcUrl }}?show={{ show }}"
   when:
     - service == "AS3"
     - status.json.version is version('3.6.0', '>=')
@@ -18,7 +18,7 @@
 
 - name: Setup optional URL query 'showHash' when using POST with AS3
   set_fact:
-    actUrl: "{{ actUrl }}&showHash={{ show_hash }}"
+    atcUrl: "{{ atcUrl }}&showHash={{ show_hash }}"
   when:
     - service == "AS3"
     - status.json.version is version('3.14.0', '>=')
@@ -26,12 +26,10 @@
     - show_hash
     - method in ['POST', 'GET']
 
-- name: Setup optional URL query 'async' when using POST with AS3
+- name: Setup URL query 'async' when using POST with AS3
   set_fact:
-    actUrl: "{{ actUrl }}&async={{ async }}"
+    atcUrl: "{{ atcUrl }}&async=true"
   when:
     - service == "AS3"
     - status.json.version is version('3.5.0', '>=')
-    - async != ""
-    - async
     - method in ['POST']

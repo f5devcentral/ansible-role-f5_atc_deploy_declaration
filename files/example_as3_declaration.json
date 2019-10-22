@@ -10,7 +10,6 @@
        "remark": "Simple HTTP application with RR pool",
        "Sample_01": {
           "class": "Tenant",
-          "optimisticLockKey": "ehALoW/RCL+4UeTkQPKaTVVuu4veVk4Lu2v0eOou7DA=",
           "A1": {
              "class": "Application",
              "template": "http",
