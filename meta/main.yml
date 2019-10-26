@@ -9,20 +9,20 @@ galaxy_info:
   license: Apache
   min_ansible_version: 2.8
   platforms:
-   - name: AS3
-     versions:
-     - all
-   - name: TS
-     versions:
-     - all
-   - name: DO
-     versions:
-     - all
+    - name: AS3
+      versions:
+        - all
+    - name: TS
+      versions:
+        - all
+    - name: DO
+      versions:
+        - all
   galaxy_tags:
-   - f5
-   - networking
-   - as3
-   - do
-   - ts
-   - bigip
-   - bigiq
+    - f5
+    - networking
+    - as3
+    - do
+    - ts
+    - bigip
+    - bigiq
