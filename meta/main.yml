@@ -9,13 +9,13 @@ galaxy_info:
   license: Apache
   min_ansible_version: 2.8
   platforms:
-    - name: AS3
+    - name: 'AS3'
       versions:
         - all
-    - name: TS
+    - name: 'TS'
       versions:
         - all
-    - name: DO
+    - name: 'DO'
       versions:
         - all
   galaxy_tags:
