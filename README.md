@@ -46,6 +46,22 @@ File at url specfied is downloaded to path/filename specified in variable atc_de
 
 Default is null.
 
+    atc_delay: 30
+
+Amount of time between retires when checking service status
+
+Required
+
+Default 30 seconds
+
+    atc_retries: 10
+
+Number of times to retry service status
+
+Required
+
+Default 10
+
     as3_tenant:
 
 POSTing to a specific AS3 tenant.
@@ -96,21 +112,6 @@ Optional
 
 Default is false.
 
-    as3_async: false
-
-Async with AS3 3.5.0+
-
-Optional
-
-Setting async to true causes AS3 to respond with a 202 status and a request ID which
-you can later use in a GET request to a new /task endpoint to get the results. Typically
-only used with extremely large declarations which take a long time for AS3 to process.
-The record IDs expire after 24 hours. When you retrieve a record, AS3 deletes the record
-along with any expired records. A GET to /task with no record ID specified returns
-(and deletes) all records.
-
-Default is false.
-
 
 
 ## Dependencies
@@ -123,6 +124,14 @@ None.
       hosts: bigip
       vars_files:
         - vars/main.yml
+      vars:
+        provider:
+          server: "{{ atc_server }}"
+          server_port: "{{ atc_port }}"
+          user: "{{ atc_user }}"
+          password: "{{ atc_password }}"
+          validate_certs: "{{ atc_validate_certs }}"
+          transport: "{{ atc_transport }}"  
       roles:
         - { role: f5devcentral.f5_atc_deploy_declaration }
 
@@ -137,7 +146,9 @@ None.
     atc_timeout: 120
     atc_method: POST
     atc_declaration_file: files/example_as3_declaration.json
-    atc_declaration_url: https://raw.githubusercontent.com/crosbygw/declaritives/master/files/example_as3_declaration.json
+    atc_declaration_url: https://raw.githubusercontent.com/f5devcentral/ansible-role-f5_atc_deploy_declaration/master/files/example_as3_declaration.json
+    atc_delay: 30
+    atc_retries: 10
     as3_tenant: Sample_01
     as3_show: base
     as3_showhash: true
