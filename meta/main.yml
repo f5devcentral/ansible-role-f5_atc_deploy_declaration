@@ -2,7 +2,7 @@
 
 dependencies: []
 galaxy_info:
-  role_name: atc_deploy_declaritives
+  role_name: atc_deploy
   author: crosbygw
   description: Allows declaration to be sent to automation tool chain service (AS3, DO, or TS)
   company: F5 Networks

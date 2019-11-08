@@ -1,6 +1,9 @@
 # Ansible Role: F5 automation tool chain (ATC) deploy declaration
 
-Deploys declaritives to automation tool chain services (AS3, DO, TS).
+This role deploys declaritives to installed automation tool chain services (AS3, DO, TS) on your BIG-IP or BIG-IQ. You would use this role to post declarations to the following BIG-IP or BIG-IQ automation tool chain services: application services 3 extension, declaritive onboarding, or telemetry streaming. Information regarding these services along with example declaritives is available on [f5-cloud-docs](https://clouddocs.f5.com/).
+
+* note: this role determines which service to use by the referenced declaritive which should contain the service class.
+For example, AS3 declaritives will contain a service pointer using key "class": with value "AS3" in json declared file [Example](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/http-services.html#http-with-custom-persistence). Be sure to define service pointers at the beginning of your declaration.
 
 ## Requirements
 
@@ -161,3 +164,8 @@ Apache
 ## Author Information
 
 This role was created in 2019 by [Greg Crosby](https://github.com/crosbygw).<br>
+
+## Credits
+
+A special thanks to Vinnie Mazza ([@vinnie357](https://github.com/vinnie357)) for the
+ansible playbook examples.
