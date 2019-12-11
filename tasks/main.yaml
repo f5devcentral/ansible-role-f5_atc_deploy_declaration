@@ -3,54 +3,59 @@
 - name: Setup provider and varables
   set_fact:
     provider: "{{ provider }}"
-    declaration_url: "{{ atc_declaration_url|default('') }}"
-    declaration_file: "{{ atc_declaration_file }}"
-    tenant: "{{ as3_tenant|default('') }}"
-    method: "{{ atc_method }}"
-    show: "{{ as3_show|default('base') }}"
-    show_hash: "{{ as3_showhash|default(false) }}"
-    timeout: "{{ atc_timeout }}"
-    retries: "{{ atc_retries }}"
-    delay: "{{ atc_delay }}"
+    atc_declaration_url: "{{ atc_declaration_url|default(omit) }}"
+    atc_declaration_file: "{{ atc_declaration_file|default(omit) }}"
+    atc_tenant: "{{ as3_tenant|default(omit) }}"
+    atc_show: "{{ as3_show|default('base') }}"
+    atc_show_hash: "{{ as3_showhash|default(false) }}"
 
 - name: Download file if url specified
   get_url:
-    url: "{{ declaration_url }}"
-    dest: "{{ declaration_file }}"
-  when: declaration_url != ""
+    url: "{{ atc_declaration_url }}"
+    dest: "{{ atc_declaration_file }}"
+  when: atc_declaration_url is defined
 
-- name: Set Automated Tool Chain service type
+- name: Validate if atc_service name is correct if defined
+  fail:
+    msg: The specified atc_service is not valid
+  when: atc_service not in valid_services
+
+- name: Set Automated Tool Chain service type from file
   set_fact:
-    service: "{{ (lookup('file', declaration_file, errors='strict')| from_json).get('class') }}"
+    atc_service: "{{ (lookup('file', atc_declaration_file, errors='strict')| from_json).get('class') }}"
+    when: atc_declaration_file is defined and atc_service is undefined
+
+- name: Set Automated Tool Chain metadata
+  set_fact:
     toolchain_metadata: "{{ lookup('file', 'files/toolchain_metadata.json', errors='strict') }}"
 
-- name: Setup service "{{ service }}" endpoints
+- name: Setup service "{{ atc_service }}" endpoints
   set_fact:
-    atcUrl: "{{ toolchain_metadata['components'][service]['endpoints']['configure']['uri'] }}"
-    atcCheckUrl: "{{ toolchain_metadata['components'][service]['endpoints']['info']['uri'] }}"
+    atc_url: "{{ toolchain_metadata['components'][service]['endpoints']['configure']['uri'] }}"
+    atc_check_url: "{{ toolchain_metadata['components'][service]['endpoints']['info']['uri'] }}"
 
 - name: include authentication.yaml
   include_tasks: authentication.yaml
 
-- name: Verify "{{ service }}" service is available, and collect service info
+- name: Verify "{{ atc_service }}" service is available, and collect service info
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atcCheckUrl }}"
-    timeout: "{{ timeout }}"
+    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atc_check_url }}"
+    timeout: "{{ atc_timeout }}"
     validate_certs: "{{ provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
-  register: status
+  register: atc_response
   until:
-    - status is success
-    - status.json is defined
-  retries: "{{ retries }}"
-  delay: "{{ delay }}"
+    - atc_response is success
+    - atc_response.json is defined
+  retries: "{{ atc_retries }}"
+  delay: "{{ atc_delay }}"
 
 - name: include as3_filtering.yaml
   include_tasks: as3_filtering.yaml
   when:
-    - service == "AS3"
-    - method in ['POST', 'GET']
+    - atc_service == "AS3"
+    - atc_method in ['POST', 'GET']
 
 - name: include declare.yaml
   include_tasks: declare.yaml

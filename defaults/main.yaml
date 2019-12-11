@@ -21,13 +21,6 @@ atc_timeout: 120
 # Required
 atc_method: GET
 
-# Local location of declaration.
-#
-# Required
-#
-# Path and filename required.
-atc_declaration_file:
-
 # URL of declaration location
 #
 # Optional

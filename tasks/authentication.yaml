@@ -9,6 +9,7 @@
     body:
       username: "{{ provider.user }}"
       password: "{{ provider.password }}"
+      loginProviderName: "tmos"
     body_format: json
   register: authtoken
 
