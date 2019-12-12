@@ -1,15 +1,4 @@
 ---
-
-### Connection parameters
-#
-# Required
-atc_server: "{{ ansible_host }}"
-atc_port: 443
-atc_user:
-atc_password:
-atc_validate_certs: true
-atc_transport: rest
-
 ### Automated Tool Chain service configuration.
 #
 # Timeout in seconds used during web connections.
@@ -21,13 +10,6 @@ atc_timeout: 120
 # Required
 atc_method: GET
 
-# Local location of declaration.
-#
-# Required
-#
-# Path and filename required.
-atc_declaration_file:
-
 # URL of declaration location
 #
 # Optional
@@ -35,7 +17,7 @@ atc_declaration_file:
 # File at url specfied is downloaded to path/filename specified in varable act_declaration_file.
 #
 # Default is null.
-atc_declaration_url:
+# atc_declaration_url:
 
 # Amount of time between retires when checking service status
 #
@@ -96,3 +78,6 @@ as3_show: base
 #
 # Default is false.
 as3_showhash: false
+
+# When downloading a remote file, select to overwrite or not if it exists already
+download_force: true

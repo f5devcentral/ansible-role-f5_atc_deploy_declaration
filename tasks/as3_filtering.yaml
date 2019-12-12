@@ -2,34 +2,29 @@
 
 - name: Setup AS3 endpoint with specified tenant when tenant specified
   set_fact:
-    atcUrl: "{{ atcUrl }}/{{ tenant }}"
+    atc_url: "{{ atc_url }}/{{ atc_tenant }}"
   when:
-    - tenant != ""
-    - service == "AS3"
-    - status.json.version is version('3.14.0', '>=')
+    - atc_tenant is defined
+    - atc_response.json.version is version('3.14.0', '>=')
 
 - name: Setup URL query 'show' when using GET, POST, or DELETE with AS3
   set_fact:
-    atcUrl: "{{ atcUrl }}?show={{ show }}"
+    atc_url: "{{ atc_url }}?show={{ atc_show }}"
   when:
-    - service == "AS3"
-    - status.json.version is version('3.6.0', '>=')
-    - show != ""
+    - atc_response.json.version is version('3.6.0', '>=')
+    - atc_show is defined
 
 - name: Setup optional URL query 'showHash' when using POST with AS3
   set_fact:
-    atcUrl: "{{ atcUrl }}&showHash={{ show_hash }}"
+    atc_url: "{{ atc_url }}&showHash={{ atc_show_hash }}"
   when:
-    - service == "AS3"
-    - status.json.version is version('3.14.0', '>=')
-    - show_hash != ""
-    - show_hash
-    - method in ['POST', 'GET']
+    - atc_response.json.version is version('3.14.0', '>=')
+    - atc_show_hash | bool
+    - atc_method in ['POST', 'GET']
 
 - name: Setup URL query 'async' when using POST with AS3
   set_fact:
-    atcUrl: "{{ atcUrl }}&async=true"
+    atc_url: "{{ atc_url }}&async=true"
   when:
-    - service == "AS3"
-    - status.json.version is version('3.5.0', '>=')
-    - method in ['POST']
+    - atc_response.json.version is version('3.5.0', '>=')
+    - atc_method in ['POST']

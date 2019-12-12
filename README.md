@@ -1,9 +1,9 @@
 # Ansible Role: F5 automation tool chain (ATC) deploy declaration
 
-This role deploys declaritives to installed automation tool chain services (AS3, DO, TS) on your BIG-IP or BIG-IQ. You would use this role to post declarations to the following BIG-IP or BIG-IQ automation tool chain services: application services 3 extension, declaritive onboarding, or telemetry streaming. Information regarding these services along with example declaritives is available on [f5-cloud-docs](https://clouddocs.f5.com/).
+This role deploys declaratives to installed automation tool chain services (AS3, DO, TS) on your BIG-IP or BIG-IQ. You would use this role to post declarations to the following BIG-IP or BIG-IQ automation tool chain services: application services 3 extension, declaritive onboarding, or telemetry streaming. Information regarding these services along with example declaritives is available on [f5-cloud-docs](https://clouddocs.f5.com/).
 
-* note: this role determines which service to use by the referenced declaritive which should contain the service class.
-For example, AS3 declaritives will contain a service pointer using key "class": with value "AS3" in json declared file [Example](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/http-services.html#http-with-custom-persistence). Be sure to define service pointers at the beginning of your declaration.
+* note: this role determines which service to use by the referenced declarative which should contain the service class.
+For example, AS3 declaratives will contain a service pointer using key "class": with value "AS3" in json declared file [Example](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/http-services.html#http-with-custom-persistence). Be sure to define service pointers at the beginning of your declaration.
 
 ## Requirements
 
@@ -20,8 +20,9 @@ Available variables are listed below. For their default values, see `defaults/ma
       password: "{{ atc_password }}"
       validate_certs: "{{ atc_validate_certs }}"
       transport: "{{ atc_transport }}"
+      provider: "{{ atc_provider}}"
 
-Establishes initial connection to your BIG-IQ. These values are substituted into
+Establishes initial connection to your BIG-IQ or BIG-IP. These values are substituted into
 your ``provider`` module parameter.
 
 Required
@@ -35,17 +36,24 @@ Required
 
     atc_declaration_file:
 
-Local location of declaration.
+Local location of declaration, only required if `atc_service` is not provided
 
-Required.
+Required
 
     atc_declaration_url:
 
 URL of declaration location
 
+Optional.
+
+    atc_service:
+    
+Required if `atc_declaration_file` is not present and the requested `atc_method` is `GET`.
+
+
 Optional
 
-File at url specfied is downloaded to path/filename specified in variable atc_declaration_file.
+File at url specfied is downloaded to path/filename specified in variable `atc_declaration_file`.
 
 Default is null.
 
