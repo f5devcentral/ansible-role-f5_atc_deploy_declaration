@@ -80,4 +80,4 @@ as3_show: base
 as3_showhash: false
 
 # When downloading a remote file, select to overwrite or not if it exists already
-download_force: yes
+download_force: true
