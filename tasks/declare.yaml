@@ -1,5 +1,4 @@
 ---
-
 - name: "{{ atc_method }} AS3 declaration"
   uri:
     url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atc_url }}"
@@ -11,17 +10,17 @@
     body_format: json
     body: "{{ lookup('file', atc_declaration_file) }}"
     status_code: 204, 202, 200
-  register: atc_result
+  register: atc_AS3_result
   changed_when:
-    - atc_result.json.results | map(attribute='message') | list | first != 'no change'
-    - atc_result.json.results | map(attribute='message') | list | first != 'Declaration successfully submitted'
+    - atc_AS3_result.json.results | map(attribute='message') | list | first != 'no change'
+    - atc_AS3_result.json.results | map(attribute='message') | list | first != 'Declaration successfully submitted'
   failed_when:
-    - atc_result.json.results | map(attribute='message') | list | first != 'success'
-    - atc_result.json.results | map(attribute='message') | list | first != 'no change'
-    - atc_result.json.results | map(attribute='message') | list | first != 'Declaration successfully submitted'
+    - atc_AS3_result.json.results | map(attribute='message') | list | first != 'success'
+    - atc_AS3_result.json.results | map(attribute='message') | list | first != 'no change'
+    - atc_AS3_result.json.results | map(attribute='message') | list | first != 'Declaration successfully submitted'
   when:
     - atc_method == 'POST' or atc_method == 'DELETE'
-    - act_service == "AS3"
+    - atc_service == "AS3"
     - atc_declaration_file is defined
   delegate_to: localhost
 
@@ -36,14 +35,14 @@
     body_format: json
     body: "{{ lookup('file', atc_declaration_file) }}"
     status_code: 202
-  register: atc_result
+  register: atc_DO_result
   when:
     - atc_method == 'POST'
-    - act_service == "Device"
+    - atc_service == "Device"
     - atc_declaration_file is defined
   delegate_to: localhost
 
-- name: "{{ method }} TS declaration"
+- name: "{{ atc_method }} TS declaration"
   uri:
     url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atc_url }}"
     method: "{{ atc_method }}"
@@ -54,12 +53,12 @@
     body_format: json
     body: "{{ lookup('file', atc_declaration_file) }}"
     status_code: 204, 202, 200
-  register: atc_result
+  register: atc_TS_status
   failed_when:
-    - atc_result.json.message != 'success'
+    - atc_TS_status.json.message != 'success'
   when:
     - atc_method == 'POST'
-    - act_service == "Telemetry"
+    - atc_service == "Telemetry"
     - atc_declaration_file is defined
 
 - name: "GET {{ atc_service }} declaration"
@@ -71,7 +70,7 @@
     return_content: true
     validate_certs: "{{ provider.validate_certs }}"
     status_code: 204, 202, 200
-  register: atc_result
+  register: atc_GET_status
   when:
     - atc_method == 'GET'
   delegate_to: localhost
