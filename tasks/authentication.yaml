@@ -4,7 +4,7 @@
   uri:
     url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/authn/login"
     method: POST
-    timeout: "{{ timeout }}"
+    timeout: "{{ atc_timeout }}"
     validate_certs: "{{ provider.validate_certs }}"
     body:
       username: "{{ provider.user }}"
@@ -12,6 +12,7 @@
       loginProviderName: "tmos"
     body_format: json
   register: authtoken
+  delegate_to: localhost
 
 - name: Set the token fact if authentication succeeded
   set_fact:
@@ -21,8 +22,9 @@
 - name: Test authentication
   uri:
     url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/echo"
-    timeout: "{{ timeout }}"
+    timeout: "{{ atc_timeout }}"
     validate_certs: "{{ provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
   register: status
+  delegate_to: localhost

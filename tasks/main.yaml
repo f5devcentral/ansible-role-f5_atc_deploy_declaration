@@ -6,24 +6,26 @@
     atc_declaration_url: "{{ atc_declaration_url|default(omit) }}"
     atc_declaration_file: "{{ atc_declaration_file|default(omit) }}"
     atc_tenant: "{{ as3_tenant|default(omit) }}"
-    atc_show: "{{ as3_show|default('base') }}"
+    atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
 
 - name: Download file if url specified
   get_url:
     url: "{{ atc_declaration_url }}"
     dest: "{{ atc_declaration_file }}"
+    force: "{{ download_force }}"
   when: atc_declaration_url is defined
+  delegate_to: localhost
+
+- name: Set Automated Tool Chain service type from file
+  set_fact:
+    atc_service: "{{ (lookup('file', atc_declaration_file, errors='strict')| from_json).get('class') }}"
+  when: atc_declaration_file is defined and atc_service is undefined
 
 - name: Validate if atc_service name is correct if defined
   fail:
     msg: The specified atc_service is not valid
   when: atc_service not in valid_services
-
-- name: Set Automated Tool Chain service type from file
-  set_fact:
-    atc_service: "{{ (lookup('file', atc_declaration_file, errors='strict')| from_json).get('class') }}"
-    when: atc_declaration_file is defined and atc_service is undefined
 
 - name: Set Automated Tool Chain metadata
   set_fact:
@@ -31,8 +33,8 @@
 
 - name: Setup service "{{ atc_service }}" endpoints
   set_fact:
-    atc_url: "{{ toolchain_metadata['components'][service]['endpoints']['configure']['uri'] }}"
-    atc_check_url: "{{ toolchain_metadata['components'][service]['endpoints']['info']['uri'] }}"
+    atc_url: "{{ toolchain_metadata['components'][atc_service]['endpoints']['configure']['uri'] }}"
+    atc_check_url: "{{ toolchain_metadata['components'][atc_service]['endpoints']['info']['uri'] }}"
 
 - name: include authentication.yaml
   include_tasks: authentication.yaml
@@ -63,4 +65,4 @@
 - name: include atc_task_check.yaml
   include_tasks: atc_task_check.yaml
   when:
-    - service == "AS3" or service == "Device"
+    - atc_service == "AS3" or atc_service == "Device"
