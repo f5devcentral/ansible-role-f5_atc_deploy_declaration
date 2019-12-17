@@ -13,24 +13,21 @@ Corresponding ATC service must be installed on BIG-IP or BIG-IQ prior to deployi
 
 Available variables are listed below. For their default values, see `defaults/main.yml`:
 
-    provider:
-      server: "{{ atc_server }}"
-      server_port: "{{ atc_port }}"
-      user: "{{ atc_user }}"
-      password: "{{ atc_password }}"
-      validate_certs: "{{ atc_validate_certs }}"
-      transport: "{{ atc_transport }}"
-      provider: "{{ atc_provider}}"
+The **provider** dictionary is used in the role to define connection details to the BIG-IP in the same way F5 Modules work. Take a look at the [Virtual Address](https://clouddocs.f5.com/products/orchestration/ansible/devel/modules/bigip_virtual_address_module.html) module for more explanation on **provider**.
 
-Establishes initial connection to your BIG-IQ or BIG-IP. These values are substituted into
-your ``provider`` module parameter.
+    provider:
+      server: "f5"
+      server_port: "443"
+      user: "admin"
+      password: "supersecret"
+      validate_certs: "true"
 
 Required
 
     atc_method: GET
 
 atc_method accepted values include [POST, GET] for all services, and [DELETE] for AS3 only.
-f5_atc_deploy_declaration role currently does not support AS3 PATCH method.
+atc_deploy role currently does not support AS3 PATCH method.
 
 Required
 
@@ -129,41 +126,60 @@ Default is false.
 
 None.
 
-## Example Playbook
+## Examples
 
-    - name: Deploy AS3 Declaration
+**Provider** variable for the followng examples is below:
+
+    provider:
+      server: f5
+      server_port: 443
+      user: admin
+      password: supersecret
+      validate_certs: true
+
+#### GET AT Declaration
+
+    - name: GET AT Declaration
       hosts: bigip
-      vars_files:
-        - vars/main.yml
       vars:
-        provider:
-          server: "{{ atc_server }}"
-          server_port: "{{ atc_port }}"
-          user: "{{ atc_user }}"
-          password: "{{ atc_password }}"
-          validate_certs: "{{ atc_validate_certs }}"
-          transport: "{{ atc_transport }}"  
-      roles:
-        - { role: f5devcentral.f5_atc_deploy_declaration }
+        provider: "{{ provider }}"
 
-*Inside `vars/main.yml`*:
+      tasks:
 
-    atc_server: "{{ ansible_host }}"
-    atc_port: 443
-    atc_user: admin
-    atc_password: admin
-    atc_validate_certs: true
-    atc_transport: rest
-    atc_timeout: 120
-    atc_method: POST
-    atc_declaration_file: files/example_as3_declaration.json
-    atc_declaration_url: https://raw.githubusercontent.com/f5devcentral/ansible-role-f5_atc_deploy_declaration/master/files/example_as3_declaration.json
-    atc_delay: 30
-    atc_retries: 10
-    as3_tenant: Sample_01
-    as3_show: base
-    as3_showhash: true
-    as3_async: false
+        - name: ATC GET
+          include_role:
+            name: atc_deploy
+          vars:
+            atc_method: GET
+            # Select the service as AS3, Device, or Telemetry
+            atc_service: AS3
+
+    - debug: var=atc_GET_status
+
+
+#### POST AT Declaration
+
+    - name: POST AT Declaration
+      hosts: bigip
+      vars:
+        provider: "{{ provider }}"
+
+      tasks:
+
+        - name: ATC POST
+          include_role:
+            name: atc_deploy
+          vars:
+            atc_method: POST
+            atc_declaration_url: https://testurl/as3.json
+            # AS3/Device/Telemetry is selected by looking at the class within the file
+            atc_declaration_file: files/as3.json
+            atc_delay: 10
+            atc_retries: 5
+
+        # atc_AS3_status, atc_DO_status , atc_TS_status
+        - debug: var=atc_AS3_status
+
 
 ## License
 
