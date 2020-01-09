@@ -1,11 +1,10 @@
 ---
-
 - name: Setup AS3 endpoint with specified tenant when tenant specified
   set_fact:
     atc_url: "{{ atc_url }}/{{ atc_tenant }}"
   when:
     - atc_tenant is defined
-    - atc_response.json.version is version('3.14.0', '>=')
+    - atc_response.json.version is version('3.14.0', '>=') or atc_method in ['DELETE']
 
 - name: Setup URL query 'show' when using GET, POST, or DELETE with AS3
   set_fact:

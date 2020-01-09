@@ -1,5 +1,4 @@
 ---
-
 - name: Setup provider and varables
   set_fact:
     provider: "{{ provider }}"
@@ -57,7 +56,6 @@
   include_tasks: as3_filtering.yaml
   when:
     - atc_service == "AS3"
-    - atc_method in ['POST', 'GET']
 
 - name: include declare.yaml
   include_tasks: declare.yaml
