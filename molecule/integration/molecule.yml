@@ -4,10 +4,6 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
-  options:
-    config-file: molecule/default/yaml-lint.yml
 platforms:
   - name: instance
     image: geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible
@@ -22,13 +18,13 @@ provisioner:
       host_key_checking: false
   env:
     ANSIBLE_ROLES_PATH: ../../../
-  lint:
-    name: ansible-lint
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-playbook.yml}
 scenario:
   name: integration
 verifier:
   name: testinfra
-  lint:
-    name: flake8
+lint: |
+  yamllint -c molecule/default/yaml-lint.yml .
+  ansible-lint
+  flake8

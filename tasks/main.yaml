@@ -8,6 +8,7 @@
     atc_tenant: "{{ as3_tenant|default(omit) }}"
     atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
+    teem_check: "{{ teem_check|default(true) }}"
 
 - name: Download file if url specified
   get_url:
@@ -62,6 +63,7 @@
 - name: check as3 declaration and include teem data if needed
   teem_check:
     json_file_path: "{{ atc_declaration_file }}"
+  when: teem_check 
 
 - name: include declare.yaml
   include_tasks: declare.yaml
