@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import os
 import json
 from ansible.module_utils.basic import AnsibleModule
 
