@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 import json
 from ansible.module_utils.basic import AnsibleModule
 
@@ -33,13 +34,17 @@ def process_json(data, ansible_version):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            json_file_path=dict(required=True)
+            json_file_path=dict(required=True),
+            base_path=dict(required=True)
         ),
         supports_check_mode=True,
     )
 
     json_file_path = module.params['json_file_path']
+    base_path = module.params['base_path']
 
+    if not os.path.isabs(json_file_path):
+        json_file_path = base_path + "/" + json_file_path
     json_file_object = open(json_file_path, 'r')
     data = json.load(json_file_object)
     json_file_object.close()

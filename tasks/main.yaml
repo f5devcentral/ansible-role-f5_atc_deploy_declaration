@@ -63,6 +63,7 @@
 - name: check as3 declaration and include teem data if needed
   teem_check:
     json_file_path: "{{ atc_declaration_file }}"
+    base_path: "{{ role_path }}"
   when: teem_check
 
 - name: include declare.yaml
