@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import os
 import json
 from ansible.module_utils.basic import AnsibleModule
 
@@ -13,7 +12,7 @@ def process_json(data, ansible_version):
         if "controls" in data["declaration"]:
             assert not data["declaration"]["controls"]["userAgent"]
     except AssertionError:
-        return (False, None)
+        return (False, data)
 
     as3_declaration = data["declaration"]
 
@@ -34,32 +33,21 @@ def process_json(data, ansible_version):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            json_file_path=dict(required=True),
-            base_path=dict(required=True)
+            atc_json_data=dict(type='json', required=True)
         ),
         supports_check_mode=True,
     )
 
-    json_file_path = module.params['json_file_path']
-    base_path = module.params['base_path']
+    atc_json_data = module.params['atc_json_data']
 
-    if not os.path.isabs(json_file_path):
-        json_file_path = base_path + "/" + json_file_path
-    json_file_object = open(json_file_path, 'r')
-    data = json.load(json_file_object)
-    json_file_object.close()
+    atc_json_data = json.loads(atc_json_data)
 
-    (isChanged, result) = process_json(data, module.ansible_version)
+    (isChanged, result) = process_json(atc_json_data, module.ansible_version)
 
     results = dict(
         changed=isChanged,
         result=result
     )
-
-    if isChanged and result is not None:
-        json_file_object = open(json_file_path, 'w')
-        json.dump(result, json_file_object, indent=4)
-        json_file_object.close()
 
     module.exit_json(**results)
 

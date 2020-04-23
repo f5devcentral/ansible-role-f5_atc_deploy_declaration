@@ -3,25 +3,16 @@
 - name: Setup provider and varables
   set_fact:
     provider: "{{ provider }}"
-    atc_declaration_url: "{{ atc_declaration_url|default(omit) }}"
-    atc_declaration_file: "{{ atc_declaration_file|default(omit) }}"
+    atc_declaration: "{{ atc_declaration }}"
     atc_tenant: "{{ as3_tenant|default(omit) }}"
     atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
     teem_check: "{{ teem_check|default(true) }}"
 
-- name: Download file if url specified
-  get_url:
-    url: "{{ atc_declaration_url }}"
-    dest: "{{ atc_declaration_file }}"
-    force: "{{ download_force }}"
-  when: atc_declaration_url is defined
-  delegate_to: localhost
-
 - name: Set Automated Tool Chain service type from file
   set_fact:
-    atc_service: "{{ (lookup('file', atc_declaration_file, errors='strict')| from_json).get('class') }}"
-  when: atc_declaration_file is defined and atc_service is undefined
+    atc_service: "{{ atc_declaration.get('class') }}"
+  when: atc_declaration is defined and atc_service is undefined
 
 - name: Validate if atc_service name is correct if defined
   fail:
@@ -62,9 +53,15 @@
 
 - name: check as3 declaration and include teem data if needed
   teem_check:
-    json_file_path: "{{ atc_declaration_file }}"
-    base_path: "{{ role_path }}"
+    atc_json_data: "{{ atc_declaration }}"
+  register: result
   when: teem_check
+
+- name: Update the atc_declaration
+  set_fact:
+    atc_declaration_updated: "{{ result.result | default(atc_declaration) }}"
+
+- debug: msg="{{ atc_declaration_updated }}"
 
 - name: include declare.yaml
   include_tasks: declare.yaml
