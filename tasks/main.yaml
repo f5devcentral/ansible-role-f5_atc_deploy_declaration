@@ -11,9 +11,14 @@
     atc_show_hash: "{{ as3_showhash|default(false) }}"
     teem_check: "{{ teem_check|default(true) }}"
 
+- name: Get declaration from file
+  set_fact:
+    atc_declaration: "{{ lookup('file', atc_declaration_file, errors='strict')| from_json }}"
+  when: atc_declaration_file is defined
+
 - name: Download file if url specified
   uri:
-    url: atc_declaration_url
+    url: "{{ atc_declaration_url }}"
     method: GET
     return_content: true
     status_code: 200
@@ -25,12 +30,7 @@
 
 - name: Update the atc_declaration
   set_fact:
-    atc_declaration: "{{ result }}"
-
-- name: Get declaration from file
-  set_fact:
-    atc_declaration: "{{ lookup('file', atc_declaration_file, errors='strict')| from_json }}"
-  when: atc_declaration_file is defined
+    atc_declaration: "{{ result.json }}"
 
 - name: Set Automated Tool Chain service type from file
   set_fact:
