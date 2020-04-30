@@ -9,7 +9,6 @@
     atc_tenant: "{{ as3_tenant|default(omit) }}"
     atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
-    teem_check: "{{ teem_check|default(true) }}"
 
 - name: Get declaration from file
   set_fact:
@@ -79,7 +78,7 @@
   teem_check:
     atc_json_data: "{{ atc_declaration }}"
   register: result
-  when: teem_check
+  when: check_teem
 
 - name: Update the atc_declaration
   set_fact:
