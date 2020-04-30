@@ -1,12 +1,14 @@
 #!/usr/bin/python
 import json
+from distutils.version import LooseVersion
 from ansible.module_utils.basic import AnsibleModule
 
 
-def process_json(data, ansible_version):
+def process_json(data, ansible_version, atc_version):
     try:
         assert data["class"]
         assert data["class"].lower() == "as3"
+        assert LooseVersion(atc_version["version"]) >= LooseVersion("3.18")
         assert data["declaration"]
         assert data["declaration"]["class"].lower() == "adc"
         if "controls" in data["declaration"]:
@@ -33,16 +35,21 @@ def process_json(data, ansible_version):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            atc_json_data=dict(type='json', required=True)
+            atc_json_data=dict(type='json', required=True),
+            atc_version=dict(type='json', required=True)
         ),
         supports_check_mode=True,
     )
 
     atc_json_data = module.params['atc_json_data']
+    atc_version = module.params['atc_version']
 
     atc_json_data = json.loads(atc_json_data)
+    atc_version = json.loads(atc_version)
 
-    (isChanged, result) = process_json(atc_json_data, module.ansible_version)
+    (isChanged, result) = process_json(atc_json_data,
+                                       module.ansible_version,
+                                       atc_version)
 
     results = dict(
         changed=isChanged,

@@ -77,6 +77,7 @@
 - name: check as3 declaration and include teem data if needed
   teem_check:
     atc_json_data: "{{ atc_declaration }}"
+    atc_version: "{{ atc_response.json }}"
   register: result
   when: check_teem
 
