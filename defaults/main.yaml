@@ -81,3 +81,6 @@ as3_showhash: false
 
 # When downloading a remote file, select to overwrite or not if it exists already
 download_force: true
+
+# Add Control data to AS3 declaration for identifying ansible version
+check_teem: true
