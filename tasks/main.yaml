@@ -31,6 +31,7 @@
 - name: Update the atc_declaration
   set_fact:
     atc_declaration: "{{ result.json }}"
+  when: atc_declaration_url is defined
 
 - name: Set Automated Tool Chain service type from file
   set_fact:
