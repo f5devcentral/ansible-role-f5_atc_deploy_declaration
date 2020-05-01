@@ -13,7 +13,9 @@ Corresponding ATC service must be installed on BIG-IP or BIG-IQ prior to deployi
 
 Available variables are listed below. For their default values, see `defaults/main.yml`:
 
-The **provider** dictionary is used in the role to define connection details to the BIG-IP in the same way F5 Modules work. Take a look at the [Virtual Address](https://clouddocs.f5.com/products/orchestration/ansible/devel/modules/bigip_virtual_address_module.html) module for more explanation on **provider**.
+Required
+
+The **provider** dictionary is used in the role to define connection details to the BIG-IP in the same way F5 Modules work.
 
     provider:
       server: "f5"
@@ -22,26 +24,41 @@ The **provider** dictionary is used in the role to define connection details to 
       password: "supersecret"
       validate_certs: "true"
 
-Required
+Optional
 
     atc_method: GET
 
-atc_method accepted values include [POST, GET] for all services, and [DELETE] for AS3 only.
-atc_deploy role currently does not support AS3 PATCH method.
+- atc_method accepted values include [POST, GET] for all services, and [DELETE] for AS3 only.
+
+- atc_deploy role currently does not support AS3 PATCH method.
 
 Required
 
-    atc_declaration_file:
+    atc_declaration: "{{ lookup('template', 'decl.json') }}"
 
-Local location of declaration, only required if `atc_service` is not provided
+- Mutually exclusive with `atc_declaration_file` and `atc_declaration_url`
+
 
 Required
 
-    atc_declaration_url:
+    atc_declaration_file: "files/decl.json"
+
+File location of declaration
+
+- Mutually exclusive with `atc_declaration` and `atc_declaration_url`
+
+Required
+
+    atc_declaration_url: "https://testurl/as3.json"
+
 
 URL of declaration location
 
-Optional.
+
+- Mutually exclusive with `atc_declaration` and `atc_declaration_file`
+
+
+Optional
 
     atc_service:
     
@@ -118,8 +135,12 @@ Attempts to change/update any of the tenants without the correct optimisticLockK
 
 Optional
 
-Default is false.
+Default is true
 
+    check_teem: true
+
+
+- Updates AS3 declaration to include Ansible version for telemetry.
 
 
 ## Dependencies
@@ -171,9 +192,10 @@ None.
             name: atc_deploy
           vars:
             atc_method: POST
-            atc_declaration_url: https://testurl/as3.json
-            # AS3/Device/Telemetry is selected by looking at the class within the file
-            atc_declaration_file: files/as3.json
+            atc_declaration: "{{ lookup('template', 'decl.json') }}"
+            # atc_declaration_file: files/as3.json
+            # atc_declaration_url: "https://testurl/as3.json"
+            atc_declaration_file: "files/as3.json"
             atc_delay: 10
             atc_retries: 5
 
