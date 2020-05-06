@@ -10,6 +10,8 @@
     atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
 
+- debug: msg="{{ atc_declaration }}"
+
 - name: Get declaration from file
   set_fact:
     atc_declaration: "{{ lookup('file', atc_declaration_file, errors='strict')| from_json }}"
