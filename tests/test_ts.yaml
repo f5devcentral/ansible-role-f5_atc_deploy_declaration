@@ -8,8 +8,7 @@
       user: admin
       server: "{{ ansible_host }}"
       server_port: 443
-      # password: admin
-      password: f5site02
+      password: admin
       validate_certs: no
 
   tasks:
@@ -46,6 +45,24 @@
       assert:
         that:
           - atc_TS_status is not failed
+
+    - name: Telemetry Streaming Example Declaration GET
+      block:
+        - name: Telemetry Streaming Example Declaration GET
+          include_role:
+            name: ansible-role-f5_atc_deploy_declaration
+          vars:
+            atc_method: GET
+            atc_service: Telemetry
+            atc_delay: 10
+            atc_retries: 5
+          register: result
+
+    - name: Assert Telemetry Streaming Example Declaration
+      assert:
+        that:
+          - atc_GET_status is not failed
+          - atc_GET_status.json.declaration.My_Consumer is defined
 
     - name: Telemetry Streaming Incorrect Declaration
       block:

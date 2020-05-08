@@ -8,8 +8,7 @@
       user: admin
       server: "{{ ansible_host }}"
       server_port: 443
-      # password: admin
-      password: f5site02
+      password: admin
       validate_certs: no
 
   tasks:
@@ -29,6 +28,24 @@
       assert:
         that:
           - atc_DO_result is not failed
+
+    - name: Declarative Onboarding Example Declaration GET
+      block:
+        - name: Declarative Onboarding Example Declaration GET
+          include_role:
+            name: ansible-role-f5_atc_deploy_declaration
+          vars:
+            atc_method: GET
+            atc_service: Device
+            atc_delay: 10
+            atc_retries: 5
+          register: result
+
+    - name: Assert Declarative Onboarding Example Declaration
+      assert:
+        that:
+          - atc_GET_status is not failed
+          - atc_GET_status.json.declaration.Common is defined
 
     - name: Declarative Onboarding Incorrect Declaration
       block:
