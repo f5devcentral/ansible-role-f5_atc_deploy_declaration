@@ -10,6 +10,7 @@
     body_format: json
     body: "{{ atc_declaration_updated }}"
     status_code: 204, 202, 200
+    timeout: "{{ atc_timeout }}"
   register: atc_AS3_result
   changed_when:
     - atc_AS3_result.json.results | map(attribute='message') | list | first != 'no change'
@@ -35,6 +36,7 @@
     body_format: json
     body: "{{ atc_declaration_updated }}"
     status_code: 202
+    timeout: "{{ atc_timeout }}"
   register: atc_DO_result
   when:
     - atc_method == 'POST'
@@ -53,6 +55,7 @@
     body_format: json
     body: "{{ atc_declaration_updated }}"
     status_code: 204, 202, 200
+    timeout: "{{ atc_timeout }}"
   register: atc_TS_status
   failed_when:
     - atc_TS_status.json.message != 'success'
@@ -70,6 +73,7 @@
     return_content: true
     validate_certs: "{{ provider.validate_certs }}"
     status_code: 204, 202, 200
+    timeout: "{{ atc_timeout }}"
   register: atc_GET_status
   when:
     - atc_method == 'GET'

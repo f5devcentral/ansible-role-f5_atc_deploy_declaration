@@ -1,5 +1,4 @@
 ---
-
 - name: Setup provider and varables
   set_fact:
     provider: "{{ provider }}"
@@ -72,7 +71,6 @@
   include_tasks: as3_filtering.yaml
   when:
     - atc_service == "AS3"
-    - atc_method in ['POST', 'GET']
 
 - name: check as3 declaration and include teem data if needed
   teem_check:
