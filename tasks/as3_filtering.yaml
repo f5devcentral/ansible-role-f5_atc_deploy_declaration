@@ -27,4 +27,4 @@
     atc_url: "{{ atc_url }}&async=true"
   when:
     - atc_response.json.version is version('3.5.0', '>=')
-    - atc_method in ['POST']
+    - atc_method in ['POST', 'DELETE']

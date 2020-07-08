@@ -72,7 +72,7 @@
   include_tasks: as3_filtering.yaml
   when:
     - atc_service == "AS3"
-    - atc_method in ['POST', 'GET']
+    - atc_method in ['POST', 'GET', 'DELETE']
 
 - name: check as3 declaration and include teem data if needed
   teem_check:
