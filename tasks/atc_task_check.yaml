@@ -20,7 +20,7 @@
   delegate_to: localhost
   when:
     - atc_service == "AS3"
-    - atc_method == "POST"
+    - atc_method in ['POST', 'DELETE']
 
 - name: Wait for DO Task to complete
   uri:

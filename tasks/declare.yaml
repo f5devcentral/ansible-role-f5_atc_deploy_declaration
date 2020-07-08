@@ -8,7 +8,7 @@
     return_content: true
     validate_certs: "{{ provider.validate_certs }}"
     body_format: json
-    body: "{{ atc_declaration_updated }}"
+    body: "{{ atc_declaration_updated | default(omit) }}"
     status_code: 204, 202, 200
   register: atc_AS3_result
   changed_when:
@@ -21,7 +21,7 @@
   when:
     - atc_method == 'POST' or atc_method == 'DELETE'
     - atc_service == "AS3"
-    - atc_declaration_updated is defined
+    # - atc_declaration_updated is defined
   delegate_to: localhost
 
 - name: "{{ atc_method }} DO declaration"

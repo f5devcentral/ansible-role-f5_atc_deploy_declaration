@@ -5,7 +5,7 @@
     atc_url: "{{ atc_url }}/{{ atc_tenant }}"
   when:
     - atc_tenant is defined
-    - atc_response.json.version is version('3.14.0', '>=')
+    - atc_response.json.version is version('3.14.0', '>=') or atc_method in ['DELETE']
 
 - name: Setup URL query 'show' when using GET, POST, or DELETE with AS3
   set_fact:
@@ -27,4 +27,4 @@
     atc_url: "{{ atc_url }}&async=true"
   when:
     - atc_response.json.version is version('3.5.0', '>=')
-    - atc_method in ['POST']
+    - atc_method in ['POST', 'DELETE']
