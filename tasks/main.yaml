@@ -79,13 +79,11 @@
     atc_json_data: "{{ atc_declaration }}"
     atc_version: "{{ atc_response.json }}"
   register: result
-  when: check_teem
+  when: check_teem and atc_declaration is defined
 
 - name: Update the atc_declaration
   set_fact:
-    atc_declaration_updated: "{{ result.result | default(atc_declaration) }}"
-
-- debug: msg="{{ atc_declaration_updated }}"
+    atc_declaration_updated: "{{ result.result | default(omit) }}"
 
 - name: include declare.yaml
   include_tasks: declare.yaml
