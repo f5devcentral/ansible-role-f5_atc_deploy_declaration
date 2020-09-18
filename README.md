@@ -55,6 +55,7 @@ None.
               user: admin
               password: admin
               validate_certs: "false"
+              auth_provider: tmos
 
     - debug: var=atc_GET_status
 
@@ -83,6 +84,7 @@ None.
               user: admin
               password: admin
               validate_certs: "false"
+              auth_provider: tmos
 
         # atc_AS3_status, atc_DO_status , atc_TS_status
         - debug: var=atc_AS3_status
