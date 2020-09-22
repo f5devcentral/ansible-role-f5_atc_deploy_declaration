@@ -74,12 +74,12 @@
     - atc_service == "AS3"
     - atc_method in ['POST', 'GET', 'DELETE']
 
-- name: check as3 declaration and include teem data if needed
-  teem_check:
-    atc_json_data: "{{ atc_declaration }}"
-    atc_version: "{{ atc_response.json }}"
-  register: result
-  when: check_teem and atc_declaration is defined
+# - name: check as3 declaration and include teem data if needed
+#   teem_check:
+#     atc_json_data: "{{ atc_declaration }}"
+#     atc_version: "{{ atc_response.json }}"
+#   register: result
+#   when: check_teem and atc_declaration is defined
 
 - name: Update the atc_declaration
   set_fact:
