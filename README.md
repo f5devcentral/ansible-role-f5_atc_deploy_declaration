@@ -44,7 +44,7 @@ None.
 
         - name: ATC GET
           include_role:
-            name: f5devcentral.atc_deploy
+            name: atc_deploy
           vars:
             atc_method: GET
             # Select the service as AS3, Device, or Telemetry
@@ -69,7 +69,7 @@ None.
 
         - name: ATC POST
           include_role:
-            name: f5devcentral.atc_deploy
+            name: atc_deploy
           vars:
             atc_method: POST
             atc_declaration: "{{ lookup('template', 'decl.json') }}"
