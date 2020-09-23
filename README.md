@@ -1,6 +1,6 @@
 # Ansible Role: F5 automation tool chain (ATC) deploy declaration
 
-This role deploys declaratives to installed automation tool chain services (AS3, DO, TS) on your BIG-IP or BIG-IQ. You would use this role to post declarations to the following BIG-IP or BIG-IQ automation tool chain services: application services 3 extension, declaritive onboarding, or telemetry streaming. Information regarding these services along with example declaritives is available on [f5-cloud-docs](https://clouddocs.f5.com/).
+This role deploys declaratives to installed automation tool chain services (AS3, DO, TS) on your BIG-IP or (AS3, DO) on your BIG-IQ. You would use this role to post declarations to the following BIG-IP or BIG-IQ automation tool chain services: application services 3 extension, declaritive onboarding, or telemetry streaming (BIG-IP only). Information regarding these services along with example declaritives is available on [f5-cloud-docs](https://clouddocs.f5.com/).
 
 * note: this role determines which service to use by the referenced declarative which should contain the service class.
 For example, AS3 declaratives will contain a service pointer using key "class": with value "AS3" in json declared file [Example](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/http-services.html#http-with-custom-persistence). Be sure to define service pointers at the beginning of your declaration.
@@ -55,6 +55,7 @@ None.
               user: admin
               password: admin
               validate_certs: "false"
+              auth_provider: tmos
 
     - debug: var=atc_GET_status
 
@@ -83,6 +84,7 @@ None.
               user: admin
               password: admin
               validate_certs: "false"
+              auth_provider: tmos
 
         # atc_AS3_status, atc_DO_status , atc_TS_status
         - debug: var=atc_AS3_status
