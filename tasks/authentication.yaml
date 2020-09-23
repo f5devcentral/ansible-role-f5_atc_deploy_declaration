@@ -9,7 +9,7 @@
     body:
       username: "{{ provider.user }}"
       password: "{{ provider.password }}"
-      loginProviderName: "{{ provider.auth_provider }}"
+      loginProviderName: "{{ provider.auth_provider | default('tmos') }}"
     body_format: json
   register: authtoken
   delegate_to: localhost
