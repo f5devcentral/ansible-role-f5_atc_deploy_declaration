@@ -63,18 +63,19 @@
       when:
         - atc_service == "Device"
         - atc_method == "POST"
-  # Rescue block for handling BIG-IQ token timeouts
+  # Rescue block for handling BIG-IQ token timeouts (max 4*300sec=20min, 300sec is the default expiration time for BIG-IQ, 1200sec for BIG-IP)
   rescue:
     - fail:
-        msg: Ended after 5 retries
-      when: retry_count|int == 5
+        msg: Ended after 4 retries
+      when: retry_count|int == 4
     
     - debug:
-        msg: "caught error: {{ atc_DO_status.result.message }}"
+        msg: "caught error: {{ atc_DO_status.msg }}"
 
-    - name: Re authenticate to BIG-IQ
+    - name: Re authenticate to BIG-IQ/BIG-IP
       include_tasks: authentication.yaml
-      when: atc_DO_status.result.message == "Invalid registered claims."
+      when: atc_DO_status.status == 401
 
     - name: Redo check
       include_tasks: atc_task_check.yaml
+      when: atc_DO_status.status == 401
