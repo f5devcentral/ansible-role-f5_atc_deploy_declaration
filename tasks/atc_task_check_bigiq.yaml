@@ -47,11 +47,13 @@
         - atc_method == "POST"
   # Rescue block for handling BIG-IQ token timeouts (max 4*300sec=20min, 300sec is the default expiration time for BIG-IQ, 1200sec for BIG-IP)
   rescue:
-    - fail:
+    - name: Fail after 4 retries
+      fail:
         msg: Ended after 4 retries
       when: retry_count|int == 4
     
-    - debug:
+    - name: Display error message
+      debug:
         msg: "caught error: {{ atc_DO_status.msg }}"
 
     - name: Re authenticate to BIG-IQ/BIG-IP
@@ -59,5 +61,6 @@
       when: atc_DO_status.status == 401
 
     - name: Redo check
-      include_tasks: atc_task_check.yaml
+      include_tasks: atc_task_check_bigiq.yaml
       when: atc_DO_status.status == 401
+  
