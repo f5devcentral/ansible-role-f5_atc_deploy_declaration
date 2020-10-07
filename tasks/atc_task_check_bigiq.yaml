@@ -63,4 +63,3 @@
     - name: Redo check
       include_tasks: atc_task_check_bigiq.yaml
       when: atc_DO_status.status == 401
-  
