@@ -88,7 +88,26 @@
 - name: include declare.yaml
   include_tasks: declare.yaml
 
-- name: include atc_task_check.yaml
-  include_tasks: atc_task_check.yaml
+- name: Check if BIG-IQ (ignore if failed)
+  uri:
+    url: "https://{{ provider.server }}:{{ provider.server_port }}/info/system"
+    timeout: "{{ atc_timeout }}"
+    validate_certs: "{{ provider.validate_certs }}"
+    headers:
+      X-F5-Auth-Token: "{{ f5_auth_token }}"
+  register: check_bigiq
+  ignore_errors: yes
+
+# BIG-IP task check
+- name: include atc_task_check_bigip.yaml
+  include_tasks: atc_task_check_bigip.yaml
   when:
+    - check_bigiq.status == 404 ## if /info/system does not exist, it is a BIG-IP
+    - atc_service == "AS3" or atc_service == "Device"
+
+# BIG-IQ task check
+- name: include atc_task_check_bigiq.yaml
+  include_tasks: atc_task_check_bigiq.yaml
+  when:
+    - check_bigiq.status == 200 ## if /info/system exists, it is a BIG-IQ
     - atc_service == "AS3" or atc_service == "Device"
