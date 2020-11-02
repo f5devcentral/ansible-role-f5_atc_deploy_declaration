@@ -8,6 +8,10 @@
   debug:
     var: provider
 
+- name: Debug provider combined
+  debug:
+    msg: "{{ default_provider | combine(provider) }}"
+
 - name: Setup provider and varables
   set_fact:
     provider: "{{ default_provider | combine(provider) }}"
