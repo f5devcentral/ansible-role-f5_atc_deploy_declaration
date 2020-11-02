@@ -54,6 +54,7 @@
     body: "{{ atc_declaration_updated }}"
     status_code: 204, 202, 200
   register: atc_TS_status
+  delegate_to: localhost
   failed_when:
     - atc_TS_status.json.message != 'success'
   when:
