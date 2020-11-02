@@ -87,4 +87,4 @@ check_teem: true
 
 # Fill in default values for "provider"
 default_provider:
-  server_port "443"
+  server_port: "443"
