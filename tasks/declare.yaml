@@ -54,13 +54,13 @@
     body: "{{ atc_declaration_updated }}"
     status_code: 204, 202, 200
   register: atc_TS_status
-  delegate_to: localhost
   failed_when:
     - atc_TS_status.json.message != 'success'
   when:
     - atc_method == 'POST'
     - atc_service == "Telemetry"
     - atc_declaration_updated is defined
+  delegate_to: localhost
 
 - name: "GET {{ atc_service }} declaration"
   uri:
