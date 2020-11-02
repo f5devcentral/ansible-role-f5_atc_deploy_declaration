@@ -84,3 +84,7 @@ download_force: true
 
 # Add Control data to AS3 declaration for identifying ansible version
 check_teem: true
+
+# Fill in default values for "provider"
+default_provider:
+  server_port "443"
