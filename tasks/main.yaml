@@ -1,17 +1,5 @@
 ---
 
-- name: Debug default_provider
-  debug:
-    var: default_provider
-
-- name: Debug provider
-  debug:
-    var: provider
-
-- name: Debug provider combined
-  debug:
-    msg: "{{ default_provider | combine(provider) }}"
-
 - name: Setup provider and varables
   set_fact:
     role_provider: "{{ default_provider | combine(provider) }}"
@@ -21,14 +9,6 @@
     atc_tenant: "{{ as3_tenant|default(omit) }}"
     atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
-
-- name: Debug role_provider
-  debug:
-    var: role_provider
-
-- name: Debug provider
-  debug:
-    var: provider
 
 - name: Get declaration from file
   set_fact:
