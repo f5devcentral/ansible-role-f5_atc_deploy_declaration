@@ -1,8 +1,12 @@
 ---
 
-- name: Setup provider and varables
+- name: Setup role_provider
   set_fact:
     role_provider: "{{ default_provider | combine(provider) }}"
+  no_log: true
+
+- name: Setup varables
+  set_fact:
     atc_declaration: "{{ atc_declaration|default(omit) }}"
     atc_declaration_url: "{{ atc_declaration_url|default(omit) }}"
     atc_declaration_file: "{{ atc_declaration_file|default(omit) }}"
