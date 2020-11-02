@@ -2,14 +2,14 @@
 
 - name: Get authentication token
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/authn/login"
+    url: "https://{{ role_provider.server }}:{{ role_provider.server_port }}/mgmt/shared/authn/login"
     method: POST
     timeout: "{{ atc_timeout }}"
-    validate_certs: "{{ provider.validate_certs }}"
+    validate_certs: "{{ role_provider.validate_certs }}"
     body:
-      username: "{{ provider.user }}"
-      password: "{{ provider.password }}"
-      loginProviderName: "{{ provider.auth_provider | default('tmos') }}"
+      username: "{{ role_provider.user }}"
+      password: "{{ role_provider.password }}"
+      loginProviderName: "{{ role_provider.auth_provider | default('tmos') }}"
     body_format: json
   register: authtoken
   delegate_to: localhost
@@ -21,9 +21,9 @@
 
 - name: Test authentication
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}/mgmt/shared/echo"
+    url: "https://{{ role_provider.server }}:{{ role_provider.server_port }}/mgmt/shared/echo"
     timeout: "{{ atc_timeout }}"
-    validate_certs: "{{ provider.validate_certs }}"
+    validate_certs: "{{ role_provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
   register: status

@@ -14,7 +14,7 @@
 
 - name: Setup provider and varables
   set_fact:
-    provider: "{{ default_provider | combine(provider) }}"
+    role_provider: "{{ default_provider | combine(provider) }}"
     atc_declaration: "{{ atc_declaration|default(omit) }}"
     atc_declaration_url: "{{ atc_declaration_url|default(omit) }}"
     atc_declaration_file: "{{ atc_declaration_file|default(omit) }}"
@@ -22,9 +22,9 @@
     atc_show: "{{ as3_show|default(omit) }}"
     atc_show_hash: "{{ as3_showhash|default(false) }}"
 
-- name: Debug default_provider
+- name: Debug role_provider
   debug:
-    var: default_provider
+    var: role_provider
 
 - name: Debug provider
   debug:
@@ -77,9 +77,9 @@
 
 - name: Verify "{{ atc_service }}" service is available, and collect service info
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}{{ atc_check_url }}"
+    url: "https://{{ role_provider.server }}:{{ role_provider.server_port }}{{ atc_check_url }}"
     timeout: "{{ atc_timeout }}"
-    validate_certs: "{{ provider.validate_certs }}"
+    validate_certs: "{{ role_provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
   register: atc_response
@@ -111,9 +111,9 @@
 
 - name: Check if BIG-IQ (ignore if failed)
   uri:
-    url: "https://{{ provider.server }}:{{ provider.server_port }}/info/system"
+    url: "https://{{ role_provider.server }}:{{ role_provider.server_port }}/info/system"
     timeout: "{{ atc_timeout }}"
-    validate_certs: "{{ provider.validate_certs }}"
+    validate_certs: "{{ role_provider.validate_certs }}"
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
   register: check_bigiq
