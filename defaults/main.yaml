@@ -85,6 +85,9 @@ download_force: true
 # Add Control data to AS3 declaration for identifying ansible version
 check_teem: true
 
-# Fill in default values for "provider"
+# Default values for "provider", as specified in Ansible Collection "f5_modules/bigip_device_info"
 default_provider:
+  auth_provider: tmos
   server_port: "443"
+  transport: rest
+  validate_certs: yes
