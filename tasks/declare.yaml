@@ -60,6 +60,7 @@
     - atc_method == 'POST'
     - atc_service == "Telemetry"
     - atc_declaration_updated is defined
+  delegate_to: localhost
 
 - name: "GET {{ atc_service }} declaration"
   uri:

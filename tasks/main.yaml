@@ -24,6 +24,7 @@
     body_format: json
   when: atc_declaration_url is defined
   register: result
+  delegate_to: localhost
   retries: 10
   delay: 5
 
@@ -62,6 +63,7 @@
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
   register: atc_response
+  delegate_to: localhost
   until:
     - atc_response is success
     - atc_response.json is defined
@@ -79,6 +81,7 @@
     atc_json_data: "{{ atc_declaration }}"
     atc_version: "{{ atc_response.json }}"
   register: result
+  delegate_to: localhost
   when: check_teem and atc_declaration is defined
 
 - name: Update the atc_declaration
@@ -96,6 +99,7 @@
     headers:
       X-F5-Auth-Token: "{{ f5_auth_token }}"
   register: check_bigiq
+  delegate_to: localhost
   ignore_errors: yes
 
 # BIG-IP task check
