@@ -84,6 +84,7 @@
 - name: Update the atc_declaration
   set_fact:
     atc_declaration_updated: "{{ result.result | default(omit) }}"
+  when: result.result is defined
 
 - name: include declare.yaml
   include_tasks: declare.yaml
