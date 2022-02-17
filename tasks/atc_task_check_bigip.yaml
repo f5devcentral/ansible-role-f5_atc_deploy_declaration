@@ -14,9 +14,8 @@
   retries: "{{ atc_retries }}"
   delay: "{{ atc_delay }}"
   changed_when: atc_AS3_status.json.results | map(attribute='message') | list | first != 'no change'
-  failed_when:
-    - atc_AS3_status.json.results | map(attribute='message') | list | first != 'success'
-    - atc_AS3_status.json.results | map(attribute='message') | list | first != 'no change'
+  failed_when: ('success' not in (atc_AS3_status.json.results | map(attribute='message') | list) and 'no change' not in (atc_AS3_status.json.results | map(attribute='message') | list) ) or
+    ('declaration failed' in (atc_AS3_status.json.results | map(attribute='message') | list))
   delegate_to: localhost
   when:
     - atc_service == "AS3"
